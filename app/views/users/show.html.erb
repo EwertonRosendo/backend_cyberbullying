@@ -5,6 +5,9 @@
 <div>
   <%= link_to "Edit this user", edit_user_path(@user) %> |
   <%= link_to "Back to users", users_path %>
+  <% if @user.photo.attached? %>
+    <%= image_tag @user.photo, width: 300 %>
+  <% end %>
 
   <%= button_to "Destroy this user", @user, method: :delete %>
 </div>

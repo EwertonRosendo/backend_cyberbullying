@@ -1,3 +1,5 @@
+include Rails.application.routes.url_helpers
+
 class UsersController < ApplicationController
   before_action :set_user, only: %i[ show edit update destroy ]
   before_action :validate_user, only: %i[create]
@@ -9,6 +11,14 @@ class UsersController < ApplicationController
 
   # GET /users/1 or /users/1.json
   def show
+    respond_to do |format|
+      format.html { render :show }  # Renders app/views/users/show.html.erb
+      format.json {
+        render json: @user.as_json.merge({
+          photo_url: @user.photo.attached? ? url_for(@user.photo) : nil
+        })
+      }
+    end
   end
 
   # GET /users/new
@@ -65,7 +75,7 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(:email, :password_digest)
+      params.require(:user).permit(:email, :password_digest, :photo)
     end
 
     def validate_user
