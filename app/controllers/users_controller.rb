@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: %i[ show edit update destroy ]
+  before_action :validate_user, only: %i[create]
 
   # GET /users or /users.json
   def index
@@ -22,7 +23,6 @@ class UsersController < ApplicationController
   # POST /users or /users.json
   def create
     @user = User.new(user_params)
-
     respond_to do |format|
       if @user.save
         format.html { redirect_to user_url(@user), notice: "User was successfully created." }
@@ -66,5 +66,12 @@ class UsersController < ApplicationController
     # Only allow a list of trusted parameters through.
     def user_params
       params.require(:user).permit(:email, :password_digest)
+    end
+
+    def validate_user
+      @ticket = Ticket.find_by(email: user_params[:email])
+      if @ticket.nil?
+        render json: { error: 'Cannot create user without a valid ticket' }, status: :unprocessable_entity
+      end
     end
 end
