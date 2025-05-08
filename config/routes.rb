@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :cases
   post "sessions/create"
   get "sessions/destroy"
   resources :users

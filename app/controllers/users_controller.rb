@@ -7,6 +7,18 @@ class UsersController < ApplicationController
   # GET /users or /users.json
   def index
     @users = User.all
+  
+    respond_to do |format|
+      format.html
+      format.json {
+        render json: @users.map { |user|
+          user.attributes.merge({
+            kind: user.kind, # ensure kind comes as string
+            photo_url: user.photo.attached? ? url_for(user.photo) : nil
+          })
+        }
+      }
+    end
   end
 
   # GET /users/1 or /users/1.json
@@ -75,7 +87,7 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(:email, :password, :password_digest, :photo)
+      params.require(:user).permit(:email, :password, :password_digest, :photo, :kind)
     end
 
     def validate_user
