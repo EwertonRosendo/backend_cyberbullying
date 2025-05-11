@@ -2,7 +2,7 @@ include Rails.application.routes.url_helpers
 
 class UsersController < ApplicationController
   before_action :set_user, only: %i[ show edit update destroy ]
-  before_action :validate_user, only: %i[create]
+  #before_action :validate_user, only: %i[create]
 
   # GET /users or /users.json
   def index
