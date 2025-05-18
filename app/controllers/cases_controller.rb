@@ -1,6 +1,7 @@
 class CasesController < ApplicationController
   before_action :set_case, only: %i[ show edit update destroy ]
-
+  skip_before_action :validade_token, only: %i[ index ]
+  
   # GET /cases or /cases.json
   def index
     @cases = Case.all

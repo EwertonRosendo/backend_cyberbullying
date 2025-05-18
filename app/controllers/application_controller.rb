@@ -1,5 +1,13 @@
 class ApplicationController < ActionController::Base
+  before_action :validade_token
   skip_before_action :verify_authenticity_token
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
-  allow_browser versions: :modern
+  
+  def validade_token
+      header = request.headers['Authorization']
+      token = header.split(' ').last if header
+      decoded = SessionsHelper.decode(token)
+      if not decoded
+        render json: { error: "Invalid Token" }, status: :unauthorized
+      end
+    end
 end

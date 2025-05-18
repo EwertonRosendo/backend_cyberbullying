@@ -117,6 +117,8 @@ GEM
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
     json (2.7.2)
+    jwt (2.10.1)
+      base64
     language_server-protocol (3.17.0.3)
     logger (1.6.1)
     loofah (2.22.0)
@@ -291,6 +293,7 @@ DEPENDENCIES
   debug
   importmap-rails
   jbuilder
+  jwt
   puma (>= 5.0)
   rack-cors
   rails (~> 7.2.1)

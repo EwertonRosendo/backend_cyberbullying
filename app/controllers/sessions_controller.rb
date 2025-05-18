@@ -1,8 +1,12 @@
 class SessionsController < ApplicationController
   before_action :set_user, only: %i[ create ]
+  skip_before_action :validade_token, only: %i[ create ]
+  include SessionsHelper
+  
   def create
     if @user&.authenticate(user_params[:password])
-      render json: { message: "Logged in successfully", user: @user }
+      token = SessionsHelper.encode({ user_id: @user.id })
+      render json: { message: "Logged in successfully", user: @user, token: token }
     else
       render json: { error: "Invalid email or password" }, status: :unauthorized
     end

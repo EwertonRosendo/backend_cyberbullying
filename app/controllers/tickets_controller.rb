@@ -1,6 +1,7 @@
 class TicketsController < ApplicationController
   before_action :set_ticket, only: %i[ show edit update destroy ]
-
+  skip_before_action :validade_token, only: %i[ index ]
+  
   # GET /tickets or /tickets.json
   def index
     @tickets = Ticket.all

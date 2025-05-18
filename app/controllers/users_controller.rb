@@ -1,8 +1,9 @@
 include Rails.application.routes.url_helpers
 
 class UsersController < ApplicationController
+  include SessionsHelper
   before_action :set_user, only: %i[ show edit update destroy ]
-  #before_action :validate_user, only: %i[create]
+  before_action :validade_token, only: %i[index new create]
 
   # GET /users or /users.json
   def index
@@ -88,12 +89,5 @@ class UsersController < ApplicationController
     # Only allow a list of trusted parameters through.
     def user_params
       params.require(:user).permit(:email, :password, :password_digest, :photo, :kind)
-    end
-
-    def validate_user
-      @ticket = Ticket.find_by(email: user_params[:email])
-      if @ticket.nil?
-        render json: { error: 'Cannot create user without a valid ticket' }, status: :unprocessable_entity
-      end
     end
 end
