@@ -3,9 +3,16 @@ class CasesController < ApplicationController
   skip_before_action :validade_token, only: %i[ index ]
   
   # GET /cases or /cases.json
-  def index
-    @cases = Case.all
+def index
+  cases = Case.all.map do |c|
+    c.as_json.merge({
+      images: c.images.map { |img| url_for(img) },
+      owner_email: c.user.email
+    })
   end
+
+  render json: cases
+end
 
   # GET /cases/1 or /cases/1.json
   def show
