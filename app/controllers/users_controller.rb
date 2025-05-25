@@ -3,7 +3,8 @@ include Rails.application.routes.url_helpers
 class UsersController < ApplicationController
   include SessionsHelper
   before_action :set_user, only: %i[ show edit update destroy ]
-  before_action :validade_token, only: %i[index new create]
+  before_action :validade_token, only: %i[index new]
+  #skip_before_action :validade_token, only: %i[create]
 
   # GET /users or /users.json
   def index
@@ -88,6 +89,6 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(:email, :password, :password_digest, :photo, :kind)
+      params.require(:user).permit(:email, :password, :password_digest, :photo, :kind, :school)
     end
 end

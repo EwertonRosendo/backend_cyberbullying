@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_07_195557) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_25_052722) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -48,6 +48,29 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_07_195557) do
     t.index ["user_id"], name: "index_cases_on_user_id"
   end
 
+  create_table "questions", force: :cascade do |t|
+    t.string "school"
+    t.text "question"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "school_answers", force: :cascade do |t|
+    t.integer "question_id", null: false
+    t.integer "user_id", null: false
+    t.text "answer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["question_id"], name: "index_school_answers_on_question_id"
+    t.index ["user_id"], name: "index_school_answers_on_user_id"
+  end
+
+  create_table "schools", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "tickets", force: :cascade do |t|
     t.string "email"
     t.text "ticket_description"
@@ -63,9 +86,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_07_195557) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "kind", default: 0, null: false
+    t.string "school"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cases", "users"
+  add_foreign_key "school_answers", "questions"
+  add_foreign_key "school_answers", "users"
 end

@@ -4,4 +4,5 @@ class User < ApplicationRecord
     enum kind: { regular: 0, admin: 1 }
     validates :email, presence: true, uniqueness: { case_sensitive: false }
     validates :password, presence: true, length: { minimum: 6 }, on: :create
+    validates :school, presence: true
 end
