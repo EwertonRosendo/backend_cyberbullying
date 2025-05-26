@@ -1,6 +1,8 @@
 class User < ApplicationRecord
     has_secure_password
     has_many :school_answers
+    has_many :cases
+
     has_one_attached :photo
     enum kind: { regular: 0, admin: 1 }
     validates :email, presence: true, uniqueness: { case_sensitive: false }

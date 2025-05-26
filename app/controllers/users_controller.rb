@@ -82,30 +82,42 @@ class UsersController < ApplicationController
   end
 
   def users_by_school
-    school = params[:school]
-    @users = User.includes(school_answers: :question).where(school: school)
+  school = params[:school]
+  @users = User.includes(:cases, school_answers: :question).where(school: school)
 
-    render json: @users.map { |user|
-      {
-        id: user.id,
-        email: user.email,
-        kind: user.kind, # If you use enum, this returns as integer unless you convert
-        photo_url: user.photo.attached? ? url_for(user.photo) : nil,
-        school_answers: user.school_answers.map do |answer|
-          {
-            id: answer.id,
-            answer: answer.answer,
-            created_at: answer.created_at,
-            question: {
-              id: answer.question.id,
-              question: answer.question.question,
-              school: answer.question.school
-            }
+  render json: @users.map { |user|
+    {
+      id: user.id,
+      email: user.email,
+      kind: user.kind,
+      photo_url: user.photo.attached? ? url_for(user.photo) : nil,
+      cases: user.cases.map do |c|
+        {
+          id: c.id,
+          description: c.description,
+          institution_answer: c.institution_answer,
+          created_at: c.created_at,
+          images: c.images.map { |image| url_for(image) }
+        }
+      end,
+      school_answers: user.school_answers.map do |answer|
+        {
+          id: answer.id,
+          answer: answer.answer,
+          created_at: answer.created_at,
+          question: {
+            id: answer.question.id,
+            question: answer.question.question,
+            school: answer.question.school
           }
-        end
-      }
+        }
+      end
     }
-  end
+  }
+end
+
+
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
