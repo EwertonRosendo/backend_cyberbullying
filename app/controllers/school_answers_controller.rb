@@ -1,7 +1,7 @@
 class SchoolAnswersController < ApplicationController
   before_action :set_school_answer, only: %i[ show edit update destroy ]
   skip_before_action :validade_token
-  before_action :user_already_answered?, only: [:create]
+  #before_action :user_already_answered, only: [:create]
 
   # GET /school_answers or /school_answers.json
   def index
@@ -66,6 +66,24 @@ end
     end
   end
 
+  def user_already_answered
+      @answer = params[:school_answers].first if params[:school_answers].is_a?(Array)
+      user_id = params[:user_id]
+      exist = SchoolAnswer.exists?(user_id: user_id)
+      if exist
+        questions = SchoolAnswer.includes(:question).where(user_id: user_id)
+
+        render json: {
+          error: "User has already answered",
+          questions: questions.as_json(include: { question: { only: [:id, :question, :school] } })
+        }, status: :ok
+      else
+        render json: { message: "User has not answered yet" }, status: :not_found
+      end
+
+    
+    end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_school_answer
@@ -75,13 +93,5 @@ end
     # Only allow a list of trusted parameters through.
     def school_answer_params
       params.require(:school_answer).permit(:question_id, :user_id, :answer)
-    end
-
-    def user_already_answered?
-      @answer = params[:school_answers].first if params[:school_answers].is_a?(Array)
-      exist = SchoolAnswer.exists?(user_id: @answer["user_id"])
-      if exist
-        render json: { error: "User has already answered" }, status: :unprocessable_entity
-      end
     end
 end

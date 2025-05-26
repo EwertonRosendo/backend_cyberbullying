@@ -1,9 +1,10 @@
 Rails.application.routes.draw do
-  resources :schools
   get 'questions/schools', to: 'questions#schools'
   get "school_questions/:school", to: "questions#questions_by_school"
-
-  
+  get "user_answers/:user_id", to: "school_answers#user_already_answered"
+  get "case_by_user/:user_id", to: "cases#case_by_user"
+  get "users/school/:school", to: "users#users_by_school"
+  resources :schools
   resources :school_answers
   resources :questions
   resources :cases

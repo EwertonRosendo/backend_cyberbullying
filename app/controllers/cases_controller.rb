@@ -1,6 +1,6 @@
 class CasesController < ApplicationController
   before_action :set_case, only: %i[ show edit update destroy ]
-  skip_before_action :validade_token, only: %i[ index ]
+  skip_before_action :validade_token, only: %i[ index case_by_user ]
   
   # GET /cases or /cases.json
 def index
@@ -75,6 +75,18 @@ end
     respond_to do |format|
       format.html { redirect_to cases_url, notice: "Case was successfully destroyed." }
       format.json { head :no_content }
+    end
+  end
+
+  def case_by_user
+    @case = Case.find_by(user_id: params[:user_id])
+    if @case
+      render json: @case.as_json.merge({
+        images: @case.images.map { |img| url_for(img) },
+        owner_email: @case.user.email
+      })
+    else
+      render json: { error: "Case not found for user #{params[:user_id]}" }, status: :not_found
     end
   end
 
